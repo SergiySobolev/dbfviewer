@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+<struts-config>		
+	<form-beans>			
+		<form-bean name="dbfTable" type="sbk.dbfviewer.beans.DbfTable"/>
+		<form-bean name="fileUploadForm" type="sbk.dbfviewer.beans.FileUploadForm"/>
+	</form-beans>	
+	<global-forwards>
+		<forward name="index" path="/index.do" redirect="true"/>		
+		<forward name="dbfviewerStyle" path="/css/dbfviewer.css" />
+	</global-forwards>
+	<action-mappings>
+		<action name="dbfTable" path="/index" type="sbk.dbfviewer.actions.ViewAction" validate="false" scope="session">
+			<forward name="index" path="/WEB-INF/views/index.jsp" /> 			
+		</action>	
+		<action path="/UploadPage" type="org.apache.struts.actions.ForwardAction" parameter="/WEB-INF/views/fileupload.jsp"/>			
+		<action path="/Upload" type="sbk.dbfviewer.actions.FileUploadAction" name="fileUploadForm" validate="true" input="/index.do"/>	
+	</action-mappings>
+	<controller processorClass="org.apache.struts.tiles.TilesRequestProcessor" />	
+	<message-resources parameter="sbk.dbfviewer.common.Common" key="commonMsg" null="true"/>	
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+		<set-property property="moduleAware" value="true" />
+	</plug-in>	
+</struts-config>

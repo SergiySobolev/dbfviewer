@@ -1,0 +1,9 @@
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
+"http://struts.apache.org/dtds/tiles-config_1_3.dtd">
+<tiles-definitions> 
+   <definition name="dict-base-layout" path="/WEB-INF/layouts/baseLayout.jsp">   
+	<put name="header" value="/WEB-INF/parts/header.jsp" />	
+	<put name="footer" value="/WEB-INF/parts/footer.jsp" />
+   </definition> 
+</tiles-definitions>
