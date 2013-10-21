@@ -41,17 +41,17 @@ public class FileUploadForm extends ActionForm {
 //	    } 
 	    //only allow dbf file to upload
 	    String ext = this.getExt();
-	    if(!"dbf".equals(ext)){
+	    if(!"dbf".equals(ext) && !"DBF".equals(ext)){
 	    	errors.add("common.file.err.ext",  new ActionMessage("error.common.file.dbf.only"));
 	    	return errors;
 	    }
 	    
         //file size cant larger than 10kb	    
-	    if(getFile().getFileSize() > 10240){ //10kb
-	       errors.add("common.file.err.size",
-		    new ActionMessage("error.common.file.size.limit", 10240));
-	       return errors;
-	    } 
+//	    if(getFile().getFileSize() > 10240){ //10kb
+//	       errors.add("common.file.err.size",
+//		    new ActionMessage("error.common.file.size.limit", 10240));
+//	       return errors;
+//	    } 
 	    return errors;
 	}
 }

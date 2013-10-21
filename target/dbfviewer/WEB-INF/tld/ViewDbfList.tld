@@ -16,9 +16,24 @@
      <body-content>empty</body-content>         
   </tag>
   <tag>
-     <description>View file</description>
-     <name>viewdbffile</name>
-     <tag-class>sbk.dbfviewer.tags.ViewDbfFile</tag-class>
+     <description>DbfPager</description>
+     <name>dbfpager</name>
+     <tag-class>sbk.dbfviewer.tags.DbfPager</tag-class>
      <body-content>empty</body-content> 
-  </tag>
+     <attribute>
+     	<name>tableName</name> 
+     	<required>true</required>
+     	<rtexprvalue>true</rtexprvalue>
+     </attribute>
+      <attribute>
+     	<name>recOnPage</name> 
+     	<required>true</required>
+     	<rtexprvalue>true</rtexprvalue>
+     </attribute>
+     <attribute>
+     	<name>currentPage</name> 
+     	<required>true</required>
+     	<rtexprvalue>true</rtexprvalue>
+     </attribute>
+  </tag>  
 </taglib>

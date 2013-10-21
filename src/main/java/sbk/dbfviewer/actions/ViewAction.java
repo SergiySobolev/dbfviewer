@@ -1,10 +1,7 @@
 package sbk.dbfviewer.actions;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.net.URLDecoder;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,41 +11,61 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import sbk.dbfviewer.beans.DbfTable;
+import sbk.dbfviewer.utils.DbfViewerUtils;
 import sbk.dbfviewer.viewers.DbfViewer;
 public class ViewAction extends Action {
-	final private String INDEX = "index";
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		DbfTable  resultTable = (DbfTable)form;
-		DbfViewer dbfViewer;
-		String file	= request.getParameter("file");
+	final private String INDEX  		= 	"index";
+	final private String FILE   		= 	"file";
+	final private String TABLE  		= 	"table";
+	final private String CURRENTPAGE	=	"currentPage";
+	final private String ENCODING		=	"encoding";
+	final private String PAGENUM		=	"pgNum";
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {	
+		DbfTable  resultTable;
+		DbfViewer dbfViewer;	
+		response.setCharacterEncoding("utf-8");
+		String file	= request.getParameter("file");		
+		String encoding;
+		int recordsOnPage = 0;
+		try{
+			recordsOnPage = Integer.parseInt(request.getParameter("recordsOnPage"));
+		}catch(NumberFormatException ex){
+			recordsOnPage = 50;
+		}		
+		int pgNum = 1;
+		String pageNum = request.getParameter(PAGENUM);
+		if(pageNum == null){
+				try{
+					pageNum =  request.getSession().getAttribute(CURRENTPAGE).toString();
+				}catch(NullPointerException ex){
+					pageNum = "1";
+				}
+		}		
+		try{			
+			pgNum = Integer.parseInt(pageNum);			
+			request.getSession().setAttribute(CURRENTPAGE, pgNum);			
+		}catch(NumberFormatException ex){
+		}		
+		encoding = (String) request.getParameter(ENCODING);
+		if(encoding == null){
+			encoding = "cp866";
+		}
+		request.getSession().setAttribute(ENCODING, encoding);
 		if(file == null){
-			file = this.findCookie(request.getCookies(), "file");
+			file = DbfViewerUtils.findCookie(request.getCookies(), FILE);
 		}
 		if(file != null){
 			dbfViewer 	= new DbfViewer();
-			resultTable = dbfViewer.getTable(file);	
-			request.setAttribute("table", resultTable);
-			try {
-				response.addCookie(new Cookie("file", URLEncoder.encode(file,"UTF-8")));
-			} catch (UnsupportedEncodingException e) {				
-				e.printStackTrace();
-			}			
-		}
-		return mapping.findForward(INDEX);
-	}
-	public  String findCookie(Cookie[] cookies, String key){
-		if(cookies != null){
-			for(int i=0;i<cookies.length;i++){
-				String name = cookies[i].getName();
-				if(name.compareTo(key) == 0){
-					try {
-						return URLDecoder.decode(cookies[i].getValue(), "UTF-8");
-					} catch (UnsupportedEncodingException e) {
-						return null;
-					}
-				}
+			//resultTable = new DbfTable();
+			resultTable = dbfViewer.getTable(file, pgNum, (pgNum-1)*recordsOnPage, (pgNum)*recordsOnPage, encoding);
+			if(resultTable != null){
+				request.setAttribute(TABLE, resultTable);
+				request.setAttribute(FILE, file);
+				request.getSession().setAttribute(FILE, file);
+				request.getSession().setAttribute(TABLE, resultTable);
+				DbfViewerUtils.addCookie(FILE, file, response);		
 			}
 		}
-		return null;
-	}
+		return mapping.findForward(INDEX);
+	}	
 }

@@ -5,6 +5,13 @@
 // Built: 19th August 2011                                     
 ///////////////////////////////////////////////////
 
+///////////////////////////////////////////////////
+// ShowHide plugin                               
+// Author: Ashley Ford - http://papermashup.com
+// Demo: Tutorial - http://papermashup.com/jquery-show-hide-plugin
+// Built: 19th August 2011                                     
+///////////////////////////////////////////////////
+
 (function ($) {
     $.fn.showHide = function (options) {
 

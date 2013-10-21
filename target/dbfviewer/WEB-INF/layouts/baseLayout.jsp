@@ -1,4 +1,4 @@
-<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %> 
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" session="true"%> 
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
@@ -17,6 +17,12 @@
 			<td><tiles:insert attribute="header" /></td>
 		</tr>
 		<tr>
+			<td><tiles:insert attribute="options" /></td>
+		</tr>
+		<tr>
+			<td><tiles:insert attribute="pager" /></td>
+		</tr>
+		<tr>
 			<td><tiles:insert attribute="body"/></td>
 		</tr>
 		<tr>
@@ -25,8 +31,11 @@
 		<tr>
 			<td><tiles:insert attribute="footer" /></td>
 		</tr>
-	</table>
+	</table>	
 	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/showHide.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>	
+	<script type="text/javascript" src="js/chosen/chosen.jquery.min.js"></script>
+	<script type="text/javascript" src="js/dbfviewer.js"></script>
+	<script type="text/javascript" src="js/showHide.js"></script>	
 </body>
 </html>
