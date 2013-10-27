@@ -24,6 +24,7 @@ public class FilterAction extends Action {
 	final private String ENCODING		=	"encoding";
 	final private String PAGENUM		=	"pgNum";
 	final private String FILTERMAP		=	"filtermap";
+	@SuppressWarnings("unchecked")
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {		
 		String file = (String) request.getSession().getAttribute(FILE);
 		if(file == null){
@@ -61,28 +62,28 @@ public class FilterAction extends Action {
 			if(file != null){
 				dbfViewer 	= new DbfViewer();
 				Map<String, String> filterMap = new HashMap<String, String>();
-				//get filters from request
-				String filterFieldPrefix = "filterField";
-				String filterValuePrefix = "filterValue";
-				String currFilterFieldName, currFilterValueName, field, value;
-				for(int i=0;true;i++){	
-					currFilterFieldName = String.format("%s%s", filterFieldPrefix, i);
-					currFilterValueName = String.format("%s%s", filterValuePrefix, i);
-					field = request.getParameter(currFilterFieldName);
-					value = request.getParameter(currFilterValueName);	
-					if(field == null){ //last select
-						break;
-					}
-					try {
-						byte[] valueByte = value.getBytes("iso8859-1");
-						value = new String(valueByte, "utf-8");
-					} catch (UnsupportedEncodingException e) {						
-					}					
-					if(value != null && !("").equals(value)){ //empty text field
-						filterMap.put(field, value);
-					}
+				String[] fields = request.getParameterValues("filterField");
+				String[] values = request.getParameterValues("filterValue");
+				if(fields == null && values == null) {
+					 filterMap = (Map<String, String>) request.getSession().getAttribute(FILTERMAP);					 
 				}
-				request.getSession().setAttribute(FILTERMAP, filterMap);
+				else{
+					String field, value;
+					//suppose fields.length = values.length
+					for(int i=0;i<fields.length;i++){
+						field = fields[i];
+						value = values[i];
+						try {
+							byte[] valueByte = value.getBytes("iso8859-1");
+							value = new String(valueByte, "utf-8");
+						} catch (UnsupportedEncodingException e) {						
+						}					
+						if(value != null && !("").equals(value)){ //empty text field
+							filterMap.put(field, value);
+						}
+					}
+					request.getSession().setAttribute(FILTERMAP, filterMap);
+				}				
 				resultTable = dbfViewer.getTable(file, pgNum, (pgNum-1)*recordsOnPage, (pgNum)*recordsOnPage, encoding, filterMap);
 				if(resultTable != null){
 					request.setAttribute(TABLE, resultTable);

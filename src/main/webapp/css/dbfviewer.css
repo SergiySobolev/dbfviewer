@@ -103,14 +103,10 @@ h2 {
     display:none;
 }
 
-.sign{
+.sign, .signSliding{
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 14px;
 	color: #047;
-}
-
-.signSliding.sign{
-	
 }
 
 .bldUndsign{

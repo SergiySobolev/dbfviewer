@@ -16,6 +16,7 @@ public class DbfPager extends SimpleTagSupport{
 	int groupMaxLength = 4;
 	int genPageCount;
 	int maxNonInterruptedPager = 12;
+	@SuppressWarnings("unchecked")
 	public void doTag() throws JspException, IOException {
 		//JspContext jspContext = this.getJspContext();
 		//ServletContext servletContext = ((PageContext) jspContext).getServletContext();
@@ -32,29 +33,29 @@ public class DbfPager extends SimpleTagSupport{
 		genPageCount = count/recOnPage + 1;
 		if(genPageCount > maxNonInterruptedPager){
 			for(int i=1;i<=groupMaxLength;i++){
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a> ", tableName, i, i));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a> ", tableName, i, i));
 			}
 			if(currentPage > groupMaxLength+2){
 				out.print("....");
 			}			
 			if(currentPage > groupMaxLength+1 && currentPage <= genPageCount-groupMaxLength+1){
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage-1, currentPage-1));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage-1, currentPage-1));
 			}
 			if(currentPage > groupMaxLength && currentPage <= genPageCount-groupMaxLength){
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage, currentPage));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage, currentPage));
 			}
 			if(currentPage < genPageCount - groupMaxLength && currentPage >= groupMaxLength){
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage+1, currentPage+1));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a> ", tableName, currentPage+1, currentPage+1));
 			}
 			if(currentPage < genPageCount - groupMaxLength-1){
 				out.print("....");
 			}			
 			for(int i=genPageCount-3;i<=genPageCount;i++){
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a>", tableName, i, i));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a>", tableName, i, i));
 			}			
 		}else{			
 			for(int j=1;j<=genPageCount;j++){		
-				out.print(String.format(" <a href='/dbfviewer/index.do?file=%s&pgNum=%s'>%s</a>", tableName, j, j));
+				out.print(String.format(" <a href='/dbfviewer/Filter.do?file=%s&pgNum=%s'>%s</a>", tableName, j, j));
 			}
 		}
 		out.println("</div>");

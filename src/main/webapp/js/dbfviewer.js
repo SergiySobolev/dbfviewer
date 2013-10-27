@@ -41,33 +41,58 @@ $(document).ready(
 				$(".signSliding").slideToggle();
 			});
 
-			$(".filterValue").keypress(
-					function(event) {
-						if (event.which == 13) {	
-							var lastRowId	= 		$('#filterTable >tbody >tr').length-1;						
-							var selectId    = 		'filterField'.concat(lastRowId);						
-							var inputId		=		'filterValue'.concat(lastRowId);
+			$("#addFilter").click(
+					function() {							
+							var lastRowId	= 		$('#filterTable >tbody >tr').length-1;								
+						//	var selectId    = 		'filterField'.concat(lastRowId);						
+						//	var inputId		=		'filterValue'.concat(lastRowId);
+						//	var deleteId	=		'delete'.concat(lastRowId);
+							var selectId	=		'filterField';
+							var inputId		=		'filterValue';
+							var deleteId	=		'delete';
 							var newRowId	=		lastRowId + 1;						
 							var newSelectId =		'filterField'.concat(newRowId);
-							var newValueId	=		'filterValue'.concat(newRowId);						
-							var newSelect	=		$('#'.concat(selectId)).clone();
-							var newInput	=		$('#'.concat(inputId)).clone();
+							var newValueId	=		'filterValue'.concat(newRowId);		
+							var newDeleteId = 		'delete'.concat(newRowId);
+						//	var newSelect	=		$('#'.concat(selectId)).clone(true).attr('id', newSelectId);
+						//	var newInput	=		$('#'.concat(inputId)).clone(true).attr('id', newValueId);							
+						//	var newImage    =       $('#'.concat(deleteId)).clone(true).attr('id', newDeleteId);
+							var newSelect	=		$('#'.concat(selectId)).clone(true);
+							var newInput	=		$('#'.concat(inputId)).clone(true);							
+							var newImage    =       $('#'.concat(deleteId)).clone(true);
+							
 							$("#filterTable").find('tbody')
 							.append($('<tr>')
 									.append($('<td>').append(newSelect))
-									.append($('<td>').append(newInput)));
-							alert(newSelect.innerHtml.toString());
-//												var rowId = th
-//												var oldSelect 
-//												var newSelect  = 
-//												var row=  $('<tr></tr>').append($('<td></td>').text(
-//											   
-//												$("#filterTable").find('tbody').append($('<tr>')
-//																 .append($('<td>').append($('<input>').attr('type','text').attr('id', 'tst_id'))
-//																 .append($('<td>').append($('<input>').attr('type','text').attr('id', 'tst_id1'))
-//																 )));			
-////											}
-//								});		
+									.append($('<td>').append(newInput).append(newImage)));	
+							if($('#filterTable >tbody >tr').length > 1 && ($("#removeFilter").attr('disabled')=='disabled')){
+								$("#removeFilter").prop('disabled', false);
 							}
+							
 				});
+			
+			$("#removeFilter").click(function(){
+				var tblToRmv = $('#filterTable');				
+				if($('#filterTable >tbody >tr').length > 1){					
+					$('tbody tr:last', tblToRmv).remove();
+				}					
+				if($('#filterTable >tbody >tr').length < 2){						
+					$("#removeFilter").prop('disabled', true);
+				}
+			});
+			
+			$("#filterTable .delete").click(function(){	
+				var tableLength 	= 		$('#filterTable >tbody >tr').length;				
+				if(tableLength > 1){
+					var rowId 		= 		$(this).closest('tr').index();				
+					var inputId		=		'filterValue'.concat(rowId);
+				//	$(this).closest('tr').animate({ opacity: 'hide' }, "slow");
+				//	$('#'.concat(inputId)).val("");		
+					$(this).closest('tr').remove();
+					tableLength 	= 		$('#filterTable >tbody >tr').length;
+					if(tableLength <= 1){
+						$("#removeFilter").prop('disabled', true);
+					}
+				}
+			});			
 });

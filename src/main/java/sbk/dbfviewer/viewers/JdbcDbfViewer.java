@@ -1,5 +1,4 @@
 package sbk.dbfviewer.viewers;
-import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.chain.web.MapEntry;
 
 import sbk.dbfviewer.beans.DbfTable;
 
@@ -19,7 +17,7 @@ public class JdbcDbfViewer implements IDbfViewer {
 	public final String orderField = "RecNum";
 	DbfTable dbfTable;
 	public DbfTable getTable(String path, int recordsOnPage, int recordsFrom, int recordsTo, String encoding, Map<String, String> filterMap) {
-		if(filterMap.isEmpty() || filterMap == null){
+		if( filterMap == null || filterMap.isEmpty()){
 			return  this.getTable(path, recordsOnPage, recordsFrom, recordsTo, encoding);			
 		}
 		try{
@@ -35,8 +33,7 @@ public class JdbcDbfViewer implements IDbfViewer {
 	        	prop.put("CODEPAGEID", "C9");
 	        }
             Connection connection=DriverManager.getConnection(connString, prop);  	    
-	        String conditions = this.makeConditionsString(filterMap, encoding);
-	    //    String query = String.format("select  recNo() as %s, * from %s  where (recno()>=%s and recno()<%s) and %s order by %s", orderField, dbfTable.getTableName(), recordsFrom, recordsTo, conditions, orderField);	
+	        String conditions = this.makeConditionsString(filterMap, encoding);	    	
 	        String query = String.format("select  recNo() as %s, * from (select * from %s  where  %s )", orderField, dbfTable.getTableName(), conditions);	
 	        Statement stmt=connection.createStatement();
             ResultSet resultSet=stmt.executeQuery(query);
@@ -66,8 +63,7 @@ public class JdbcDbfViewer implements IDbfViewer {
 		
 		return dbfTable;
 	}
-	public DbfTable getTable(String path, int recordsOnPage, int recordsFrom, int recordsTo, String encoding) {
-	//	DbfTable dbfTable = new DbfTable();	
+	public DbfTable getTable(String path, int recordsOnPage, int recordsFrom, int recordsTo, String encoding) {		
 		try{			
 			this.getTableStructure(path);
 			Class.forName("com.hxtt.sql.dbf.DBFDriver");
@@ -76,11 +72,9 @@ public class JdbcDbfViewer implements IDbfViewer {
             prop.put("charSet", "Cp866");
             prop.put("CODEPAGEID", "66");
             Connection connection=DriverManager.getConnection(connString, prop);            
-            String query = String.format("select  recNo() as %s, * from %s  where recno()>=%s and recno()<%s  order by %s", orderField, dbfTable.getTableName(), recordsFrom, recordsTo, orderField);
-        //    query = String.format("select recNo() as %s,* from (SELECT * from student)", orderField);
+            String query = String.format("select  recNo() as %s, * from %s  where recno()>=%s and recno()<%s  order by %s", orderField, dbfTable.getTableName(), recordsFrom, recordsTo, orderField);        
             Statement stmt=connection.createStatement();            
-            ResultSet resultSet=stmt.executeQuery(query);             
-    //        ArrayList<String> fields = dbfTable.getFieldsCaptions();
+            ResultSet resultSet=stmt.executeQuery(query);  
             ArrayList<ArrayList<String>> records =  new ArrayList<ArrayList<String>>() ;
             ArrayList<String> row = new ArrayList<String>();
             dbfTable.setRecords(records);
@@ -161,8 +155,21 @@ public class JdbcDbfViewer implements IDbfViewer {
 		try {
 			Class.forName("com.hxtt.sql.dbf.DBFDriver");		
 			String connString = String.format("%s%s", "jdbc:dbf:/", path.substring(0,path.lastIndexOf("\\")));
-			Connection connection=DriverManager.getConnection(connString);
+			String encoding = "cp866";			
+			java.util.Properties prop = new java.util.Properties();
+			prop.put("charSet", encoding);
+		    if(encoding == "cp866"){
+		        	prop.put("CODEPAGEID", "66");
+		    }
+		    if(encoding == "cp1251"){
+		        	prop.put("CODEPAGEID", "C9");
+		    }
+	        Connection connection=DriverManager.getConnection(connString, prop); 
+			String conditions = this.makeConditionsString(filterMap, null);				
 			String query = String.format("select count(*) from  %s", path.substring(path.lastIndexOf("\\") + 1,path.length() - 4));
+			if(!"".equals(conditions)){
+				query += " where " + conditions;
+			}
 			Statement stmt=connection.createStatement();
 			ResultSet resultSet=stmt.executeQuery(query);  
 			resultSet.next();
@@ -174,23 +181,18 @@ public class JdbcDbfViewer implements IDbfViewer {
 		}
 	}	
 	String makeConditionsString(Map<String, String> filterMap, String encoding){
-		StringBuilder mcsBuilder = new StringBuilder(" ");
-		int condCount = 0;
-		String condition = null;
-		for(Map.Entry<String, String> me: filterMap.entrySet()){
-		//	if(condCount == 0)  mcsBuilder.append(" where ");
-			if(condCount >  0) 	mcsBuilder.append(" and ");
-			String field = me.getKey();
-			String value = me.getValue();
-			//byte[] valueBytes = me.getValue().getBytes();
-			//String value="";
-			//try {
-			//	value = new String(valueBytes, encoding);
-			//} catch (UnsupportedEncodingException e) {				
-			//}
-			condition = String.format("(%s = '%s')", field, value);
-			mcsBuilder.append(condition);
-			condCount++;			
+		StringBuilder mcsBuilder = new StringBuilder("");		
+		if(filterMap != null){
+			int condCount = 0;
+			String condition = null;
+			for(Map.Entry<String, String> me: filterMap.entrySet()){		
+				if(condCount >  0) 	mcsBuilder.append(" and ");
+				String field = me.getKey();
+				String value = me.getValue();			
+				condition = String.format("(%s = '%s')", field, value);
+				mcsBuilder.append(condition);
+				condCount++;			
+			}
 		}
 		return mcsBuilder.toString();
 	}

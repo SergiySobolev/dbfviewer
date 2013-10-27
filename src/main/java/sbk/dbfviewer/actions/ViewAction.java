@@ -1,7 +1,4 @@
 package sbk.dbfviewer.actions;
-
-import java.io.UnsupportedEncodingException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +17,7 @@ public class ViewAction extends Action {
 	final private String CURRENTPAGE	=	"currentPage";
 	final private String ENCODING		=	"encoding";
 	final private String PAGENUM		=	"pgNum";
+	final private String FILTERMAP		=	"filtermap";
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {	
 		DbfTable  resultTable;
 		DbfViewer dbfViewer;	
@@ -35,11 +33,11 @@ public class ViewAction extends Action {
 		int pgNum = 1;
 		String pageNum = request.getParameter(PAGENUM);
 		if(pageNum == null){
-				try{
-					pageNum =  request.getSession().getAttribute(CURRENTPAGE).toString();
-				}catch(NullPointerException ex){
-					pageNum = "1";
-				}
+			try{
+				pageNum =  request.getSession().getAttribute(CURRENTPAGE).toString();
+			}catch(NullPointerException ex){
+				pageNum = "1";
+			}
 		}		
 		try{			
 			pgNum = Integer.parseInt(pageNum);			
@@ -51,6 +49,8 @@ public class ViewAction extends Action {
 			encoding = "cp866";
 		}
 		request.getSession().setAttribute(ENCODING, encoding);
+		//view full table, clear all filters
+		request.getSession().setAttribute(FILTERMAP, null);
 		if(file == null){
 			file = DbfViewerUtils.findCookie(request.getCookies(), FILE);
 		}
