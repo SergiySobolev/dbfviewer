@@ -50,7 +50,7 @@ public class ViewAction extends Action {
 		}
 		request.getSession().setAttribute(ENCODING, encoding);
 		//view full table, clear all filters
-		request.getSession().setAttribute(FILTERMAP, null);
+		request.getSession().removeAttribute(FILTERMAP);
 		if(file == null){
 			file = DbfViewerUtils.findCookie(request.getCookies(), FILE);
 		}

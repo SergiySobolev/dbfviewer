@@ -17,9 +17,10 @@ public class ViewDbfList extends SimpleTagSupport {
 		JspContext jspContext = this.getJspContext();
 		ServletContext servletContext = ((PageContext) jspContext).getServletContext();
 		//String dbfFilesPath = servletContext.getRealPath("/") + "db\\";
-		String tmp = servletContext.getContextPath();
-		String dbfFilesPath = servletContext.getRealPath(servletContext.getContextPath()) + "\\db\\";
+		//String tmp = servletContext.getContextPath();
+		String dbfFilesPath = servletContext.getRealPath("") + "\\db\\";
 		JspWriter out = getJspContext().getOut();
+//		out.append(dbfFilesPath);
 		File f = new File(dbfFilesPath);
 		if (f.exists()) {
 			ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));					

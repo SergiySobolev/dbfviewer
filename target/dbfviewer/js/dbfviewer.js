@@ -86,8 +86,8 @@ $(document).ready(
 				if(tableLength > 1){
 					var rowId 		= 		$(this).closest('tr').index();				
 					var inputId		=		'filterValue'.concat(rowId);
-					$(this).closest('tr').animate({ opacity: 'hide' }, "slow");
-					$('#'.concat(inputId)).val("");		
+				//	$(this).closest('tr').animate({ opacity: 'hide' }, "slow");
+				//	$('#'.concat(inputId)).val("");		
 					$(this).closest('tr').remove();
 					tableLength 	= 		$('#filterTable >tbody >tr').length;
 					if(tableLength <= 1){
